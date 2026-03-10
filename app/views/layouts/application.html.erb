@@ -4,22 +4,37 @@
   <title>Bug Tracker</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
+
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 </head>
 
 <body>
-  <nav>
-    <ul>
-      <li><%= link_to "Dashboard", dashboard_path %></li>
-      <li><%= link_to "Projects", projects_path %></li>
-      <li>
-        <%= button_to "Logout", destroy_user_session_path, method: :delete,
-            data: { turbo_confirm: "Are you sure?" } %>
-      </li>
-    </ul>
+
+  <nav class="navbar">
+    <div class="nav-container">
+
+      <h2 class="logo">Bug Tracker</h2>
+
+      <ul class="nav-links">
+        <li><%= link_to "Dashboard", dashboard_path %></li>
+        <li><%= link_to "Projects", projects_path %></li>
+
+        <li>
+          <%= button_to "Logout",
+          destroy_user_session_path,
+          method: :delete,
+          class: "logout-btn",
+          data: { turbo_confirm: "Are you sure?" } %>
+        </li>
+      </ul>
+
+    </div>
   </nav>
 
-  <%= yield %>
+  <div class="container">
+    <%= yield %>
+  </div>
+
 </body>
 </html>

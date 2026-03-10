@@ -40,6 +40,16 @@ class ProjectsController < ApplicationController
     redirect_to projects_path, notice: "Project deleted."
   end
 
+  # MANAGER ONLY
+  def assign_users
+    @users = User.where(role: [ :qa, :developer ])
+  end
+
+  def update_users
+    @project.users = User.where(id: params[:user_ids])
+    redirect_to projects_path, notice: "Users assigned successfully."
+  end
+
   private
 
   def project_params

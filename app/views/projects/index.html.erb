@@ -1,10 +1,10 @@
 <h1>Projects</h1>
 
 <% if current_user.manager? %>
-  <%= link_to "Add New Project", new_project_path %>
+  <%= link_to "Add New Project", new_project_path, class: "btn btn-add" %>
 <% end %>
 
-<table border="1">
+<table>
 <tr>
 <th>Title</th>
 <th>Description</th>
@@ -15,16 +15,26 @@
 <tr>
 <td><%= project.title %></td>
 <td><%= project.description %></td>
+
 <td>
 
-<%= link_to "View", project_path(project) %>
+<%= link_to "View", project_path(project), class: "btn btn-view" %>
 
 <% if current_user.manager? %>
-<%= link_to "Edit", edit_project_path(project) %>
-<%= link_to "Delete", project_path(project), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+<%= link_to "Edit", edit_project_path(project), class: "btn btn-edit" %>
+
+<%= link_to "Delete", project_path(project),
+method: :delete,
+data: { turbo_confirm: "Are you sure?" },
+class: "btn btn-delete" %>
+
+<%= link_to "Assign Users", assign_users_project_path(project),
+class: "btn btn-assign" %>
+
 <% end %>
 
 </td>
+
 </tr>
 <% end %>
 

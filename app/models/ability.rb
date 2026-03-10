@@ -7,7 +7,6 @@ class Ability
     # MANAGER PERMISSIONS
     if user.manager?
       can :manage, Project
-      can :read, Project
       can :manage, Bug
       can :assign_users, Project
     end
