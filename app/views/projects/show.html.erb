@@ -1,8 +1,18 @@
-<h1><%= @project.title %></h1>
-<p><%= @project.description %></p>
+<div class="show-container">
 
-<h3>Assigned Users:</h3>
-<p><%= @project.users.map(&:email).join(", ") %></p>
+  <h1><%= @project.title %></h1>
+  <p class="project-desc"><%= @project.description %></p>
 
-<h3>Bugs:</h3>
-<%= link_to "View Bugs", project_bugs_path(@project) %>
+  <h3>Assigned Users:</h3>
+  <p class="assigned-users">
+    <% if @project.users.any? %>
+      <%= @project.users.map { |u| u.email }.join(", ") %>
+    <% else %>
+      No users assigned
+    <% end %>
+  </p>
+
+  <h3>Bugs:</h3>
+  <%= link_to "View Bugs", project_bugs_path(@project), class: "btn btn-view" %>
+
+</div>

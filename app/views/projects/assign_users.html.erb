@@ -1,12 +1,28 @@
-<h2>Assign Users to <%= @project.name %></h2>
+<div class="assign-container">
 
-<%= form_with url: update_users_project_path(@project), method: :patch do %>
-  <% @users.each do |user| %>
-    <div>
-      <%= check_box_tag "user_ids[]", user.id, @project.users.include?(user) %>
-      <%= user.email %> (<%= user.role.capitalize %>)
+  <h2>Assign Users to <%= @project.title %></h2>
+
+  <%= form_with url: update_users_project_path(@project), method: :patch do %>
+
+    <div class="users-list">
+
+      <% @users.each do |user| %>
+        <label class="user-row">
+          <%= check_box_tag "user_ids[]", user.id, @project.users.include?(user), class: "user-checkbox" %>
+
+          <span class="user-info">
+            <strong><%= user.email %></strong>
+            <span class="role-badge"><%= user.role.capitalize %></span>
+          </span>
+        </label>
+      <% end %>
+
     </div>
+
+    <div class="assign-actions">
+      <%= submit_tag "Assign Users", class: "assign-btn" %>
+    </div>
+
   <% end %>
 
-  <%= submit_tag "Assign Users", class: "btn btn-primary" %>
-<% end %>
+</div>

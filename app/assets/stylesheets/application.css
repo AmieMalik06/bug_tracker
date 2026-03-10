@@ -127,3 +127,212 @@ body {
 .nav-links a.active {
   border-bottom: 2px solid #1abc9c;
 }
+
+/* Assign users container */
+.assign-container {
+  background: white;
+  padding: 25px;
+  max-width: 600px;
+  margin: 40px auto;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Page heading */
+.assign-container h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+/* Users list */
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* User row */
+.user-row {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hover effect */
+.user-row:hover {
+  background: #ecf0f1;
+}
+
+/* Checkbox spacing */
+.user-checkbox {
+  margin-right: 12px;
+}
+
+/* User info */
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Role badge */
+.role-badge {
+  background: #3498db;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Assign button */
+.assign-actions {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.assign-btn {
+  background: #2ecc71;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.assign-btn:hover {
+  background: #27ae60;
+}
+
+/* Form container */
+.form-container {
+  background: white;
+  padding: 25px;
+  max-width: 500px;
+  margin: 40px auto;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Form heading */
+.form-container h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+}
+
+/* Form groups */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Inputs */
+.form-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Submit button */
+.submit-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: #2980b9;
+}
+
+/* Error box */
+.error-box {
+  background: #fdecea;
+  color: #c0392b;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+/* Containers */
+.form-container, .show-container {
+  background: white;
+  padding: 25px;
+  max-width: 600px;
+  margin: 40px auto;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+/* Headings */
+h1 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* Paragraphs */
+.project-desc {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+/* Assigned users */
+.assigned-users {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Inputs and Textareas */
+.form-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Buttons */
+.submit-btn, .btn {
+  padding: 8px 15px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Submit/Create Project Button */
+.submit-btn {
+  background-color: #2ecc71;
+}
+
+.submit-btn:hover {
+  background-color: #27ae60;
+}
+
+/* View Bugs Button */
+.btn-view {
+  background-color: #3498db;
+}
+
+.btn-view:hover {
+  background-color: #2980b9;
+}
+
+/* Headings for sections */
+h3 {
+  margin-top: 25px;
+  color: #34495e;
+  margin-bottom: 10px;
+}
