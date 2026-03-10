@@ -1,0 +1,22 @@
+<h1>New Project</h1>
+
+<%= form_with model: @project do |f| %>
+
+<div>
+<%= f.label :title %>
+<%= f.text_field :title %>
+</div>
+
+<div>
+<%= f.label :description %>
+<%= f.text_area :description %>
+</div>
+
+<div>
+<%= f.label "Assign Users" %>
+<%= f.collection_select :user_ids, User.all, :id, :email, {}, multiple: true %>
+</div>
+
+<%= f.submit "Create Project" %>
+
+<% end %>

@@ -1,0 +1,31 @@
+<h1>Projects</h1>
+
+<% if current_user.manager? %>
+  <%= link_to "Add New Project", new_project_path %>
+<% end %>
+
+<table border="1">
+<tr>
+<th>Title</th>
+<th>Description</th>
+<th>Actions</th>
+</tr>
+
+<% @projects.each do |project| %>
+<tr>
+<td><%= project.title %></td>
+<td><%= project.description %></td>
+<td>
+
+<%= link_to "View", project_path(project) %>
+
+<% if current_user.manager? %>
+<%= link_to "Edit", edit_project_path(project) %>
+<%= link_to "Delete", project_path(project), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+<% end %>
+
+</td>
+</tr>
+<% end %>
+
+</table>

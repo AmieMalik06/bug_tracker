@@ -1,0 +1,8 @@
+<h1><%= @project.title %></h1>
+<p><%= @project.description %></p>
+
+<h3>Assigned Users:</h3>
+<p><%= @project.users.map(&:email).join(", ") %></p>
+
+<h3>Bugs:</h3>
+<%= link_to "View Bugs", project_bugs_path(@project) %>

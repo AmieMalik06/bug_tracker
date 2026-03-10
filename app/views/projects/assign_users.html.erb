@@ -1,0 +1,12 @@
+<h2>Assign Users to <%= @project.name %></h2>
+
+<%= form_with url: update_users_project_path(@project), method: :patch do %>
+  <% @users.each do |user| %>
+    <div>
+      <%= check_box_tag "user_ids[]", user.id, @project.users.include?(user) %>
+      <%= user.email %> (<%= user.role.capitalize %>)
+    </div>
+  <% end %>
+
+  <%= submit_tag "Assign Users", class: "btn btn-primary" %>
+<% end %>

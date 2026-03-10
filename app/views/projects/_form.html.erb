@@ -1,0 +1,33 @@
+<%= form_with(model: @project, local: true) do |form| %>
+  <% if @project.errors.any? %>
+    <div class="errors">
+      <h2><%= pluralize(@project.errors.count, "error") %> prevented this project from saving:</h2>
+      <ul>
+        <% @project.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :description %>
+    <%= form.text_area :description %>
+  </div>
+
+  <% if current_user.manager? %>
+    <div>
+      <%= form.label :user_ids, "Assign Users" %>
+      <%= form.collection_select :user_ids, User.all, :id, :email, {}, { multiple: true } %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
