@@ -1,34 +1,57 @@
-<h1>Welcome, <%= current_user.email %></h1>
+<h1>Welcome, <%= current_user.email %> (<%= current_user.role.titleize %>)</h1>
+
+<% if current_user.manager? %>
+  <h3>Total Projects: <%= @projects.count %></h3>
+  <h3>Total Pending Bugs: <%= @pending_bugs.count %></h3>
+<% end %>
 
 <h2>Projects</h2>
-<table>
+
+<table border="1" cellpadding="5" cellspacing="0">
   <thead>
     <tr>
       <th>Title</th>
       <th>Description</th>
-      <th>Assigned Users</th>
+      <th>Assigned Users (Role)</th>
       <th>Actions</th>
+      <% if current_user.manager? %>
+        <th>Pending Bugs</th>
+      <% end %>
     </tr>
   </thead>
+
   <tbody>
     <% @projects.each do |project| %>
       <tr>
         <td><%= project.title %></td>
         <td><%= project.description %></td>
-        <td><%= project.users.map(&:email).join(", ") %></td>
+
         <td>
-          <%= link_to "View", project_path(project) %>
-          <% if can? :update, project %>
-            <%= link_to "Edit", edit_project_path(project) %>
+          <% project.users.each do |user| %>
+            <%= user.email %> (<%= user.role.titleize %>)<br>
           <% end %>
         </td>
+
+        <td>
+          <%= link_to "View", project_path(project) %>
+        </td>
+
+        <% if current_user.manager? %>
+          <td>
+            <%= project.bugs.where.not(status: [:completed, :resolved]).count %>
+          </td>
+        <% end %>
+
       </tr>
     <% end %>
   </tbody>
 </table>
 
+<% if current_user.manager? %>
+
 <h2>Pending Bugs</h2>
-<table>
+
+<table border="1" cellpadding="5" cellspacing="0">
   <thead>
     <tr>
       <th>Title</th>
@@ -38,26 +61,20 @@
       <th>Actions</th>
     </tr>
   </thead>
+
   <tbody>
     <% @pending_bugs.each do |bug| %>
       <tr>
         <td><%= bug.title %></td>
-        <td><%= bug.bug_type %></td>
-        <td><%= bug.status %></td>
+        <td><%= bug.bug_type.titleize %></td>
+        <td><%= bug.status.titleize %></td>
         <td><%= bug.project.title %></td>
         <td>
           <%= link_to "View", project_bug_path(bug.project, bug) %>
-          <% if current_user.qa? && bug.creator == current_user %>
-            <%= link_to "Edit", edit_project_bug_path(bug.project, bug) %>
-            <%= link_to "Delete", project_bug_path(bug.project, bug), method: :delete, data: { confirm: "Are you sure?" } %>
-          <% elsif current_user.developer? %>
-            <%= form_with(model: bug, url: project_bug_path(bug.project, bug), method: :patch, local: true) do |f| %>
-              <%= f.select :status, Bug.statuses.keys.map { |s| [s.titleize, s] }, {}, {} %>
-              <%= f.submit "Update Status" %>
-            <% end %>
-          <% end %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<% end %>

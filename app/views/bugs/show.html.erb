@@ -1,0 +1,30 @@
+<h1>Bug Detail: <%= @bug.title %></h1>
+
+<p><strong>Project:</strong> <%= @project.title %></p>
+<p><strong>Description:</strong> <%= @bug.description %></p>
+<p><strong>Type:</strong> <%= @bug.bug_type.capitalize %></p>
+<p><strong>Status:</strong> <%= @bug.status.humanize %></p>
+<p><strong>Creator:</strong> <%= @bug.creator.email %></p>
+<p><strong>Assigned Developer:</strong> <%= @bug.assigned_user&.email || "-" %></p>
+
+<% if @bug.screenshot.present? %>
+  <p><strong>Screenshot:</strong></p>
+  <%= image_tag @bug.screenshot.url, style: "max-width: 400px; border: 1px solid #ccc;" %>
+<% end %>
+
+<hr>
+
+<% if current_user.developer? %>
+  <%= form_with model: @bug, url: project_bug_path(@project, @bug), method: :patch, local: true do |f| %>
+    <%= f.label :status, "Update Status" %>
+    <%= f.select :status, @bug.available_statuses.map { |name, key| [name, key] }, selected: @bug.status %>
+    <%= f.submit "Update", class: "btn btn-update" %>
+  <% end %>
+<% elsif current_user.qa? && @bug.creator == current_user %>
+  <%= link_to "Edit", edit_project_bug_path(@project, @bug), class: "btn btn-edit" %>
+  <%= link_to "Delete", project_bug_path(@project, @bug),
+              data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
+              class: "btn btn-delete" %>
+<% end %>
+
+<%= link_to "Back to Bugs", project_bugs_path(@project), class: "btn btn-back" %>

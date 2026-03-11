@@ -3,20 +3,23 @@ class ProjectsController < ApplicationController
   load_and_authorize_resource except: [ :index ]
 
   def index
-    if current_user.manager?
-      @projects = Project.all
-    else
-      @projects = current_user.projects
-    end
+    # Base projects depending on user role
+    base_projects = current_user.manager? ? Project.all : current_user.projects.all
+
+    # Ransack search
+    @q = base_projects.ransack(params[:q])
+    @projects = @q.result.includes(:users)
   end
 
   def show
   end
 
   def new
+    @project = Project.new
   end
 
   def create
+    @project = Project.new(project_params)
     if @project.save
       redirect_to projects_path, notice: "Project created successfully."
     else

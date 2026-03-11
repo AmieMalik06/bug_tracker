@@ -1,0 +1,87 @@
+<h1>New Bug</h1>
+
+<%= form_with(model: [@project, @bug], local: true, html: { multipart: true }) do |f| %>
+
+  <% if flash[:alert].present? %>
+    <div style="color: red; margin-bottom: 10px;">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <% if @bug.errors.any? %>
+    <div style="color: red; margin-bottom: 10px;">
+      <h4>There were some errors:</h4>
+      <ul>
+        <% @bug.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </div>
+
+  <div>
+    <%= f.label :description %>
+    <%= f.text_area :description %>
+  </div>
+
+  <div>
+    <%= f.label :bug_type, "Type" %>
+    <%= f.select :bug_type, Bug.bug_types.keys.map { |t| [t.titleize, t] }, {}, { id: "bug_type_select" } %>
+  </div>
+
+  <div>
+    <%= f.label :status %>
+    <%= f.select :status, @bug.available_statuses.map { |name, value| [name, value] }, {}, { id: "status_select" } %>
+  </div>
+
+  <div>
+    <%= f.label :screenshot %>
+    <%= f.file_field :screenshot, accept: "image/png,image/gif" %>
+    <p>Allowed formats: PNG, GIF</p>
+  </div>
+
+  <div>
+    <%= f.submit "Create Bug" %>
+  </div>
+<% end %>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const typeSelect = document.getElementById("bug_type_select");
+  const statusSelect = document.getElementById("status_select");
+
+  if (!typeSelect || !statusSelect) return;
+
+  const statusOptions = {
+    feature: [
+      { name: "New", value: "new_feature" },
+      { name: "Started", value: "started" },
+      { name: "Completed", value: "completed" }
+    ],
+    bug: [
+      { name: "New", value: "new_bug" },
+      { name: "Started", value: "started" },
+      { name: "Resolved", value: "resolved" }
+    ]
+  };
+
+  function updateStatus() {
+    const selectedType = typeSelect.value;
+    statusSelect.innerHTML = "";
+    statusOptions[selectedType].forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt.value;
+      option.text = opt.name;
+      statusSelect.appendChild(option);
+    });
+  }
+
+  typeSelect.addEventListener("change", updateStatus);
+  updateStatus(); // initial load
+});
+</script>

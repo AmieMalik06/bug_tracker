@@ -11,30 +11,57 @@
 
 <body>
 
-  <nav class="navbar">
-    <div class="nav-container">
+<nav class="navbar">
+  <div class="nav-container">
+    <h2 class="logo">Bug Tracker</h2>
 
-      <h2 class="logo">Bug Tracker</h2>
+    <ul class="nav-links">
+      <!-- Dashboard (visible if logged in) -->
+      <% if current_user %>
+        <li class="<%= 'active' if current_page?(dashboard_path) %>">
+          <%= link_to "Dashboard", dashboard_path %>
+        </li>
+      <% end %>
 
-      <ul class="nav-links">
-        <li><%= link_to "Dashboard", dashboard_path %></li>
-        <li><%= link_to "Projects", projects_path %></li>
+      <!-- Projects (visible if logged in) -->
+      <% if current_user %>
+        <li class="<%= 'active' if current_page?(projects_path) %>">
+          <%= link_to "Projects", projects_path %>
+        </li>
+      <% end %>
 
+      <!-- Project-specific Bugs (only if inside a project and logged in) -->
+<!-- Project-specific Bugs (only if inside a project and logged in) -->
+<% if current_user && @project&.persisted? %>
+  <li class="<%= 'active' if current_page?(project_bugs_path(@project)) %>">
+    <%= link_to "Bugs", project_bugs_path(@project) %>
+  </li>
+<% end %>
+
+      <!-- Global Bugs Dashboard (for managers/developers only) -->
+      <% if current_user && (current_user.manager? || current_user.developer?) %>
+        <li class="<%= 'active' if current_page?(all_bugs_path) %>">
+          <%= link_to "All Bugs", all_bugs_path %>
+        </li>
+      <% end %>
+
+      <!-- Logout (visible if logged in) -->
+      <% if current_user %>
         <li>
           <%= button_to "Logout",
-          destroy_user_session_path,
-          method: :delete,
-          class: "logout-btn",
-          data: { turbo_confirm: "Are you sure?" } %>
+              destroy_user_session_path,
+              method: :delete,
+              class: "logout-btn",
+              data: { turbo_confirm: "Are you sure?" } %>
         </li>
-      </ul>
-
-    </div>
-  </nav>
-
-  <div class="container">
-    <%= yield %>
+      <% end %>
+    </ul>
   </div>
+</nav>
+
+<div class="container">
+  <%= yield %>
+</div>
 
 </body>
 </html>

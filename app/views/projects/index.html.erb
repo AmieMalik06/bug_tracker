@@ -4,38 +4,49 @@
   <%= link_to "Add New Project", new_project_path, class: "btn btn-add" %>
 <% end %>
 
+<!-- ===== Ransack Search Form ===== -->
+<%= search_form_for @q, url: projects_path, method: :get, html: { class: "search-fields", style: "margin: 15px 0;" } do |f| %>
+  <div>
+    <%= f.label :title_cont, "Title contains" %>
+    <%= f.search_field :title_cont, placeholder: "Search by title..." %>
+
+    <%= f.label :description_cont, "Description contains" %>
+    <%= f.search_field :description_cont, placeholder: "Search by description..." %>
+
+    <%= f.submit "Search", class: "btn btn-search" %>
+    <%= link_to "Clear", projects_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>
+
+<!-- ===== Projects Table ===== -->
 <table>
-<tr>
-<th>Title</th>
-<th>Description</th>
-<th>Actions</th>
-</tr>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Assigned Users</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each do |project| %>
+      <tr>
+        <td><%= project.title %></td>
+        <td><%= project.description %></td>
+        <td><%= project.users.map(&:email).join(", ") %></td>
+        <td>
+          <%= link_to "View", project_path(project), class: "btn btn-view" %>
 
-<% @projects.each do |project| %>
-<tr>
-<td><%= project.title %></td>
-<td><%= project.description %></td>
-
-<td>
-
-<%= link_to "View", project_path(project), class: "btn btn-view" %>
-
-<% if current_user.manager? %>
-<%= link_to "Edit", edit_project_path(project), class: "btn btn-edit" %>
-
-<%= link_to "Delete", project_path(project),
-method: :delete,
-data: { turbo_confirm: "Are you sure?" },
-class: "btn btn-delete" %>
-
-<%= link_to "Assign Users", assign_users_project_path(project),
-class: "btn btn-assign" %>
-
-<% end %>
-
-</td>
-
-</tr>
-<% end %>
-
+          <% if current_user.manager? %>
+            <%= link_to "Edit", edit_project_path(project), class: "btn btn-edit" %>
+            <%= link_to "Delete", project_path(project),
+                        data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
+                        class: "btn btn-delete" %>
+            <%= link_to "Assign Users", assign_users_project_path(project),
+                        class: "btn btn-assign" %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>

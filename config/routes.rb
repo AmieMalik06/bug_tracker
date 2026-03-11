@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   get "dashboard", to: "dashboard#index", as: :dashboard
 
+  get "/all_bugs", to: "bugs#all_bugs", as: :all_bugs
   devise_scope :user do
     root to: "devise/sessions#new"
   end
