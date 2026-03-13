@@ -6,7 +6,9 @@
   <%= csp_meta_tag %>
 
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-  <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  <%# <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %> %>
+  <%= javascript_importmap_tags %>
+  
 </head>
 
 <body>
@@ -29,8 +31,6 @@
           <%= link_to "Projects", projects_path %>
         </li>
       <% end %>
-
-      <!-- Project-specific Bugs (only if inside a project and logged in) -->
 <!-- Project-specific Bugs (only if inside a project and logged in) -->
 <% if current_user && @project&.persisted? %>
   <li class="<%= 'active' if current_page?(project_bugs_path(@project)) %>">
@@ -44,6 +44,28 @@
           <%= link_to "All Bugs", all_bugs_path %>
         </li>
       <% end %>
+
+
+    <% if current_user&.developer? && current_user.respond_to?(:received_notifications) %>
+      <li class="notification-menu">
+        <%= link_to '#', class: 'dropdown-toggle' do %>
+          Notifications
+          <% unread_count = current_user.received_notifications.unread.count %>
+          <% if unread_count > 0 %>
+            <span class="badge"><%= unread_count %></span>
+          <% end %>
+        <% end %>
+
+        <ul class="dropdown-menu">
+          <% current_user.received_notifications.order(created_at: :desc).limit(10).each do |notification| %>
+            <li class="<%= 'unread' if notification.unread? %>">
+              <%= link_to notification.notifiable.title, project_bug_path(notification.notifiable.project, notification.notifiable) %>
+              <small><%= time_ago_in_words(notification.created_at) %> ago</small>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    <% end %>
 
       <!-- Logout (visible if logged in) -->
       <% if current_user %>

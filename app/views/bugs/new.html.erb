@@ -1,15 +1,13 @@
-<h1>New Bug</h1>
+<h1 style="text-align:center; margin-bottom:20px;"><%= @bug.new_record? ? "New Bug" : "Edit Bug" %></h1>
 
-<%= form_with(model: [@project, @bug], local: true, html: { multipart: true }) do |f| %>
+<%= form_with(model: [@project, @bug], local: true, html: { multipart: true, class: "bug-form" }) do |f| %>
 
   <% if flash[:alert].present? %>
-    <div style="color: red; margin-bottom: 10px;">
-      <%= flash[:alert] %>
-    </div>
+    <div class="alert alert-danger"><%= flash[:alert] %></div>
   <% end %>
 
   <% if @bug.errors.any? %>
-    <div style="color: red; margin-bottom: 10px;">
+    <div class="alert alert-danger">
       <h4>There were some errors:</h4>
       <ul>
         <% @bug.errors.full_messages.each do |msg| %>
@@ -19,42 +17,43 @@
     </div>
   <% end %>
 
-  <div>
+  <div class="form-group">
     <%= f.label :title %>
-    <%= f.text_field :title %>
+    <%= f.text_field :title, class: "form-control", placeholder: "Enter bug title" %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :description %>
-    <%= f.text_area :description %>
+    <%= f.text_area :description, class: "form-control", rows: 4, placeholder: "Describe the bug" %>
   </div>
 
-  <div>
-    <%= f.label :bug_type, "Type" %>
-    <%= f.select :bug_type, Bug.bug_types.keys.map { |t| [t.titleize, t] }, {}, { id: "bug_type_select" } %>
+  <div class="form-row">
+    <div class="form-group" style="flex:1;">
+      <%= f.label :bug_type, "Type" %>
+      <%= f.select :bug_type, Bug.bug_types.keys.map { |t| [t.titleize, t] }, {}, { id: "bug_type_select", class: "form-control" } %>
+    </div>
+    <div class="form-group" style="flex:1;">
+      <%= f.label :status %>
+      <%= f.select :status, @bug.available_statuses.map { |name, value| [name, value] }, {}, { id: "status_select", class: "form-control" } %>
+    </div>
   </div>
 
-  <div>
-    <%= f.label :status %>
-    <%= f.select :status, @bug.available_statuses.map { |name, value| [name, value] }, {}, { id: "status_select" } %>
-  </div>
-
-  <div>
+  <div class="form-group">
     <%= f.label :screenshot %>
-    <%= f.file_field :screenshot, accept: "image/png,image/gif" %>
-    <p>Allowed formats: PNG, GIF</p>
+    <%= f.file_field :screenshot, accept: "image/png,image/gif", class: "form-control-file" %>
+    <small class="form-text text-muted">Allowed formats: PNG, GIF</small>
   </div>
 
-  <div>
-    <%= f.submit "Create Bug" %>
+  <div class="form-actions" style="text-align:center;">
+    <%= f.submit @bug.new_record? ? "Create Bug" : "Update Bug", class: "btn btn-primary btn-lg" %>
   </div>
+
 <% end %>
 
 <script>
 document.addEventListener("turbo:load", () => {
   const typeSelect = document.getElementById("bug_type_select");
   const statusSelect = document.getElementById("status_select");
-
   if (!typeSelect || !statusSelect) return;
 
   const statusOptions = {
@@ -82,6 +81,6 @@ document.addEventListener("turbo:load", () => {
   }
 
   typeSelect.addEventListener("change", updateStatus);
-  updateStatus(); // initial load
+  updateStatus();
 });
 </script>

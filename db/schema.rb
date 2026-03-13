@@ -10,9 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_10_060126) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_13_102756) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "activity_notification_activities", force: :cascade do |t|
+    t.string "key"
+    t.string "type"
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.string "notifiable_type"
+    t.bigint "notifiable_id"
+    t.string "target_type"
+    t.bigint "target_id"
+    t.boolean "read", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notifiable_type", "notifiable_id"], name: "index_activity_notification_activities_on_notifiable"
+    t.index ["owner_type", "owner_id"], name: "index_activity_notification_activities_on_owner"
+    t.index ["target_type", "target_id"], name: "index_activity_notification_activities_on_target"
+  end
+
+  create_table "activity_notification_targets", force: :cascade do |t|
+    t.string "target_type"
+    t.bigint "target_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["target_type", "target_id"], name: "index_activity_notification_targets_on_target"
+  end
 
   create_table "assignments", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -34,6 +59,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_10_060126) do
     t.string "screenshot"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "assigned_user_id"
     t.index ["creator_id"], name: "index_bugs_on_creator_id"
     t.index ["project_id"], name: "index_bugs_on_project_id"
   end

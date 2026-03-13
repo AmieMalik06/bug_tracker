@@ -569,3 +569,235 @@ h3 {
 .form-links a:hover {
   text-decoration: underline;
 }
+
+/* Form container */
+.form-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Headings */
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+  color: #333;
+}
+
+/* Inputs */
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Textarea height */
+textarea.form-input {
+  min-height: 100px;
+}
+
+/* Multi-select */
+select.form-input[multiple] {
+  height: 120px;
+}
+
+/* Labels */
+.form-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Submit button */
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  padding: 12px 25px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Small hints */
+.form-container small {
+  color: #666;
+}
+
+/* Form spacing */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* ----- Bug Form (New / Edit) ----- */
+.bug-form {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.bug-form .form-group {
+  margin-bottom: 15px;
+}
+
+.bug-form .form-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bug-form .form-control,
+.bug-form .form-control-file,
+.bug-form select,
+.bug-form textarea,
+.bug-form input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.bug-form .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.bug-form .btn-primary:hover {
+  background-color: #0069d9;
+}
+
+/* Alerts & Errors */
+.alert-danger {
+  background-color: #f8d7da;
+  color: #842029;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+/* ----- Bug Inventory Table ----- */
+.bug-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.bug-table th, .bug-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.bug-table th {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.bug-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.bug-table img {
+  max-width: 80px;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* Inventory buttons */
+.btn-view, .btn-edit, .btn-delete, .btn-assign {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: #fff;
+  margin-right: 5px;
+}
+
+.btn-view { background-color: #17a2b8; }
+.btn-edit { background-color: #28a745; }
+.btn-delete { background-color: #dc3545; }
+.btn-assign { background-color: #6f42c1; }
+
+.btn-view:hover { background-color: #138496; }
+.btn-edit:hover { background-color: #218838; }
+.btn-delete:hover { background-color: #c82333; }
+.btn-assign:hover { background-color: #5936a2; }
+
+/* Inventory search form */
+.bug-filter-form {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.bug-filter-form div {
+  display: flex;
+  flex-direction: column;
+}
+
+.bug-filter-form input[type="text"],
+.bug-filter-form select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.notification-menu {
+  position: relative;
+}
+
+.notification-menu .badge {
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  margin-left: 4px;
+}
+
+.notification-menu .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  width: 250px;
+  z-index: 1000;
+}
+
+.notification-menu:hover .dropdown-menu {
+  display: block;
+}
+
+.notification-menu .dropdown-menu li {
+  padding: 5px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.notification-menu .dropdown-menu li.unread {
+  font-weight: bold;
+}

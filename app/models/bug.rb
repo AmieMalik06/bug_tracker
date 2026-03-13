@@ -3,6 +3,24 @@ class Bug < ApplicationRecord
   belongs_to :creator, class_name: "User"
   belongs_to :assigned_user, class_name: "User", optional: true
 
+  # Allow these fields to be searchable with Ransack
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "assigned_user_id",
+      "bug_type",
+      "created_at",
+      "creator_id",
+      "deadline",
+      "description",
+      "id",
+      "project_id",
+      "screenshot",
+      "status",
+      "title",
+      "updated_at"
+    ]
+  end
+
   enum bug_type: { feature: 0, bug: 1 }, _prefix: true
   enum status: {
     new_feature: 0,

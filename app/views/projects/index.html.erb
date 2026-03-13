@@ -5,16 +5,20 @@
 <% end %>
 
 <!-- ===== Ransack Search Form ===== -->
-<%= search_form_for @q, url: projects_path, method: :get, html: { class: "search-fields", style: "margin: 15px 0;" } do |f| %>
-  <div>
-    <%= f.label :title_cont, "Title contains" %>
-    <%= f.search_field :title_cont, placeholder: "Search by title..." %>
+<%= search_form_for @q, url: projects_path, method: :get, html: { class: "search-fields", style: "margin: 20px 0; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;" } do |f| %>
+  <div style="flex: 1; min-width: 200px;">
+    <%= f.label :title_cont, "Title contains", class: "search-label" %>
+    <%= f.search_field :title_cont, placeholder: "Search by project title...", class: "search-input" %>
+  </div>
 
-    <%= f.label :description_cont, "Description contains" %>
-    <%= f.search_field :description_cont, placeholder: "Search by description..." %>
+  <div style="flex: 1; min-width: 200px;">
+    <%= f.label :description_cont, "Description contains", class: "search-label" %>
+    <%= f.search_field :description_cont, placeholder: "Search by description...", class: "search-input" %>
+  </div>
 
-    <%= f.submit "Search", class: "btn btn-search" %>
-    <%= link_to "Clear", projects_path, class: "btn btn-secondary" %>
+  <div style="display: flex; gap: 5px; align-items: flex-end;">
+    <%= f.submit "Search", class: "btn btn-primary", style: "background-color: #007bff; color: white; font-weight: bold; padding: 8px 16px; border-radius: 5px;" %>
+    <%= link_to "Clear", projects_path, class: "btn btn-secondary", style: "background-color: #6c757d; color: white; font-weight: bold; padding: 8px 16px; border-radius: 5px;" %>
   </div>
 <% end %>
 
@@ -39,9 +43,10 @@
 
           <% if current_user.manager? %>
             <%= link_to "Edit", edit_project_path(project), class: "btn btn-edit" %>
-            <%= link_to "Delete", project_path(project),
-                        data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
-                        class: "btn btn-delete" %>
+            <%= button_to "Delete", project_path(project),
+              method: :delete,
+              data: { confirm: "Are you sure?" },
+              class: "btn btn-delete" %>
             <%= link_to "Assign Users", assign_users_project_path(project),
                         class: "btn btn-assign" %>
           <% end %>

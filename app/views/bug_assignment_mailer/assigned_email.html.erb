@@ -1,0 +1,11 @@
+<p>Hello <%= @bug.assigned_user.name %>,</p>
+
+<p>A new bug has been assigned to you:</p>
+
+<p>
+  <strong>Title:</strong> <%= @bug.title %><br>
+  <strong>Description:</strong> <%= @bug.description %><br>
+  <strong>Project:</strong> <%= @bug.project.title %>
+</p>
+
+<p>Log in to the Bug Tracker to view and update the status.</p>

@@ -40,12 +40,9 @@ def create
   end
 
   if @bug.save
+    notify_assigned_developer(@bug)  # <-- Notify developer
     redirect_to project_bugs_path(@project), notice: "Bug reported successfully."
   else
-    # This logs validation errors in development.log
-    Rails.logger.debug "Bug could not be saved: #{@bug.errors.full_messages.join(', ')}"
-
-    # Optional: show errors in form
     flash.now[:alert] = @bug.errors.full_messages.join(", ")
     render :new
   end
@@ -99,4 +96,20 @@ end
   def bug_params
     params.require(:bug).permit(:title, :description, :bug_type, :status, :screenshot, :assigned_user_id)
   end
+
+  private
+
+def notify_assigned_developer(bug)
+  return unless bug.assigned_user.present?
+
+  # Create in-app notification
+  bug.assigned_user.notify(
+    :new_bug_assigned,
+    target: bug,
+    actor: current_user
+  )
+
+  # Optional: send email
+  BugMailer.with(bug: bug).assigned_email.deliver_later
+end
 end
