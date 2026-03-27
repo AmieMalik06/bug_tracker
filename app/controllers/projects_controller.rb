@@ -1,19 +1,21 @@
 class ProjectsController < ApplicationController
   before_action :authenticate_user!
-  load_and_authorize_resource except: [ :index ]
+  load_and_authorize_resource except: [ :index, :assign_users, :update_users ]
+  before_action :set_project, only: [ :show, :edit, :update, :destroy, :assign_users, :update_users ]
 
+  # Project Listing / Dashboard
   def index
-    # Base projects depending on user role
-    base_projects = current_user.manager? ? Project.all : current_user.projects.all
+    # Managers see all projects; others see assigned projects only
+    base_projects = current_user.manager? ? Project.all : current_user.projects
 
-    # Ransack search
+    # Ransack search + pagination
     @q = base_projects.ransack(params[:q])
-    @projects = @q.result.includes(:users)
+    @projects = @q.result.includes(:users).order(created_at: :desc).paginate(page: params[:page], per_page: 10)
   end
 
-  def show
-  end
+  def show; end
 
+  # Manager Only CRUD
   def new
     @project = Project.new
   end
@@ -27,8 +29,7 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @project.update(project_params)
@@ -40,20 +41,26 @@ class ProjectsController < ApplicationController
 
   def destroy
     @project.destroy
-    redirect_to projects_path, notice: "Project deleted."
+    redirect_to projects_path, notice: "Project deleted successfully."
   end
 
-  # MANAGER ONLY
+  # Manager Only: Assign Users
   def assign_users
+    # Managers can assign QA and Developers only
     @users = User.where(role: [ :qa, :developer ])
   end
 
   def update_users
+    # Update assignments for project
     @project.users = User.where(id: params[:user_ids])
     redirect_to projects_path, notice: "Users assigned successfully."
   end
 
   private
+
+  def set_project
+    @project = Project.find(params[:id])
+  end
 
   def project_params
     params.require(:project).permit(:title, :description, user_ids: [])

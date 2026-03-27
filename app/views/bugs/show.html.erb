@@ -16,15 +16,20 @@
 
 <% if current_user.developer? %>
   <%= form_with model: @bug, url: project_bug_path(@project, @bug), method: :patch, local: true do |f| %>
-    <%= f.label :status, "Update Status" %>
-    <%= f.select :status, @bug.available_statuses.map { |name, key| [name, key] }, selected: @bug.status %>
-    <%= f.submit "Update", class: "btn btn-update" %>
+    <div class="form-group">
+      <%= f.label :status, "Update Status" %>
+      <%= f.select :status,
+          @bug.available_statuses.map { |s| [s.capitalize, s] },
+          { selected: @bug.status },
+          class: "form-control" %>
+    </div>
+    <%= f.submit "Update", class: "btn btn-primary" %>
   <% end %>
 <% elsif current_user.qa? && @bug.creator == current_user %>
-  <%= link_to "Edit", edit_project_bug_path(@project, @bug), class: "btn btn-edit" %>
+  <%= link_to "Edit", edit_project_bug_path(@project, @bug), class: "btn btn-warning" %>
   <%= link_to "Delete", project_bug_path(@project, @bug),
-              data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
-              class: "btn btn-delete" %>
+      data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
+      class: "btn btn-danger" %>
 <% end %>
 
-<%= link_to "Back to Bugs", project_bugs_path(@project), class: "btn btn-back" %>
+<%= link_to "Back to Bugs", project_bugs_path(@project), class: "btn btn-secondary" %>

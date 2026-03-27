@@ -1,11 +1,17 @@
-<p>Hello <%= @bug.assigned_user.name %>,</p>
+<h2>New Bug Assigned</h2>
 
-<p>A new bug has been assigned to you:</p>
+<p>Hello <%= @bug.assigned_user.email %>,</p>
 
-<p>
-  <strong>Title:</strong> <%= @bug.title %><br>
-  <strong>Description:</strong> <%= @bug.description %><br>
-  <strong>Project:</strong> <%= @bug.project.title %>
-</p>
+<p>A new bug has been assigned to you in the <strong><%= @bug.project.title %></strong> project:</p>
 
-<p>Log in to the Bug Tracker to view and update the status.</p>
+<ul>
+  <li><strong>Title:</strong> <%= @bug.title %></li>
+  <li><strong>Description:</strong> <%= @bug.description %></li>
+  <li><strong>Bug Type:</strong> <%= @bug.bug_type.capitalize %></li>
+  <li><strong>Status:</strong> <%= @bug.status.capitalize %></li>
+  <li><strong>Created by:</strong> <%= @bug.creator.email %></li>
+</ul>
+
+<p>You can view the bug <a href="<%= project_bug_url(@bug.project, @bug) %>">here</a>.</p>
+
+<p>Regards,<br/>Bug Tracking System</p>

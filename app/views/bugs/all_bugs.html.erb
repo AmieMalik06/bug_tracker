@@ -1,58 +1,34 @@
 <h1>All Bugs Dashboard</h1>
 
-<%= form_with model: @q, url: all_bugs_path, method: :get, local: true, id: "bug-filter-form" do |f| %>
+<%= form_with model: @q, url: all_bugs_path, method: :get, local: true do |f| %>
   <div style="display:flex; gap:15px; flex-wrap:wrap; margin:20px 0;">
-
-    <!-- Title / Description Filter -->
+    <!-- Title Search -->
     <div>
-      <%= f.label :title_or_description_cont, "Title / Description" %><br>
-      <%= f.search_field :title_or_description_cont, placeholder: "Search..." %>
+      <%= f.label :title_cont, "Title" %><br>
+      <%= f.search_field :title_cont, placeholder: "Search by title...", value: params.dig(:q, :title_cont) %>
     </div>
 
-    <!-- Bug Type Filter -->
+    <!-- Bug Type -->
     <div>
       <%= f.label :bug_type_eq, "Type" %><br>
       <%= f.select :bug_type_eq,
-        [["All", ""]] + Bug.bug_types.keys.map { |b| [b.capitalize, b] },
-        {},
-        id: "type-filter"
-      %>
-    </div>
-
-    <!-- Status Filter (dynamic) -->
-    <div>
-      <%= f.label :status_eq, "Status" %><br>
-      <%= f.select :status_eq,
-        [["All", ""]] + Bug.new.available_statuses.values.uniq.map { |s| [s.humanize, s] },
-        {},
-        id: "status-filter"
-      %>
-    </div>
-
-    <!-- Project Filter -->
-    <div>
-      <%= f.label :project_id_eq, "Project" %><br>
-      <%= f.select :project_id_eq,
-        [["All", ""]] + Project.all.pluck(:title, :id),
-        {},
-        id: "project-filter"
+          [["All", ""]] + Bug.bug_types.keys.map { |b| [b.humanize, b] },
+          { selected: params.dig(:q, :bug_type_eq) },
+          class: "form-control"
       %>
     </div>
 
     <div style="align-self:flex-end;">
-      <%= f.submit "Filter" %>
-      <%= link_to "Reset", all_bugs_path %>
+      <%= f.submit "Filter", class: "btn btn-primary" %>
+      <%= link_to "Reset", all_bugs_path, class: "btn btn-secondary" %>
     </div>
-
   </div>
 <% end %>
 
-<!-- BUG LIST -->
 <table border="1" cellpadding="10" cellspacing="0">
   <thead>
     <tr>
       <th>Title</th>
-      <th>Description</th>
       <th>Type</th>
       <th>Status</th>
       <th>Project</th>
@@ -61,12 +37,11 @@
     </tr>
   </thead>
   <tbody>
-    <% if @bugs.any? %>
+    <% if @bugs.present? %>
       <% @bugs.each do |bug| %>
         <tr>
           <td><%= bug.title %></td>
-          <td><%= truncate(bug.description, length: 50) %></td>
-          <td><%= bug.bug_type.capitalize %></td>
+          <td><%= bug.bug_type.humanize %></td>
           <td><%= bug.status.humanize %></td>
           <td><%= bug.project.title %></td>
           <td><%= bug.creator.email %></td>
@@ -75,66 +50,10 @@
       <% end %>
     <% else %>
       <tr>
-        <td colspan="7" style="text-align:center;">No bugs found.</td>
+        <td colspan="6" style="text-align:center;">No bugs found.</td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<!-- FILTER SCRIPT -->
-<script>
-document.addEventListener("turbo:load", () => {
-
-  const typeFilter = document.getElementById("type-filter");
-  const statusFilter = document.getElementById("status-filter");
-
-  if(!typeFilter || !statusFilter) return;
-
-  const statusOptions = {
-    feature: [
-      { text: "New", value: "new_feature" },
-      { text: "Started", value: "started" },
-      { text: "Completed", value: "completed" }
-    ],
-    bug: [
-      { text: "New", value: "new_bug" },
-      { text: "Started", value: "started" },
-      { text: "Resolved", value: "resolved" }
-    ]
-  };
-
-  function updateStatusOptions() {
-    const selectedType = typeFilter.value;
-
-    // Clear current options
-    statusFilter.innerHTML = "";
-    const allOption = document.createElement("option");
-    allOption.value = "";
-    allOption.text = "All";
-    statusFilter.appendChild(allOption);
-
-    if(statusOptions[selectedType]){
-      statusOptions[selectedType].forEach(opt => {
-        const option = document.createElement("option");
-        option.value = opt.value;
-        option.text = opt.text;
-        statusFilter.appendChild(option);
-      });
-    } else {
-      // If "All" type selected, show all statuses
-      Object.values(statusOptions).flat().forEach(opt => {
-        const option = document.createElement("option");
-        option.value = opt.value;
-        option.text = opt.text;
-        statusFilter.appendChild(option);
-      });
-    }
-  }
-
-  typeFilter.addEventListener("change", updateStatusOptions);
-
-  // Initialize on page load
-  updateStatusOptions();
-
-});
-</script>
+<%= will_paginate @bugs %>

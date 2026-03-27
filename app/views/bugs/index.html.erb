@@ -4,198 +4,73 @@
   <%= link_to "Report a New Bug", new_project_bug_path(@project), class: "btn btn-add" %>
 <% end %>
 
-<!-- SEARCH + FILTER FORM -->
-
-<%= form_with model: @q, url: project_bugs_path(@project), method: :get, local: true, id: "bug-filter-form" do |f| %>
-
+<%= form_with model: @q, url: project_bugs_path(@project), method: :get, local: true do |f| %>
   <div style="display:flex; gap:15px; flex-wrap:wrap; margin:20px 0;">
-
+    <!-- Title Filter -->
     <div>
-      <%= f.label :title_or_description_cont, "Title / Description" %><br>
-      <%= f.search_field :title_or_description_cont, placeholder: "Search..." %>
+      <%= f.label :title_cont, "Title" %><br>
+      <%= f.search_field :title_cont, placeholder: "Search by title..." %>
     </div>
 
+    <!-- Bug Type Filter -->
     <div>
       <%= f.label :bug_type_eq, "Type" %><br>
       <%= f.select :bug_type_eq,
         [["All", ""]] + Bug.bug_types.keys.map { |b| [b.capitalize, b] },
-        {},
-        id: "type-filter"
-      %>
-    </div>
-
-    <div>
-      <%= f.label :status_eq, "Status" %><br>
-      <%= f.select :status_eq,
-        [["All", ""]] + Bug.statuses.keys.map { |s| [s.humanize, s] },
-        {},
-        id: "status-filter"
+        { selected: params.dig(:q, :bug_type_eq) },
+        class: "form-control"
       %>
     </div>
 
     <div style="align-self:flex-end;">
-      <%= f.submit "Filter" %>
-      <%= link_to "Reset", project_bugs_path(@project) %>
+      <%= f.submit "Filter", class: "btn btn-primary" %>
+      <%= link_to "Reset", project_bugs_path(@project), class: "btn btn-secondary" %>
     </div>
-
   </div>
-
 <% end %>
-
-
-<!-- BUG LIST -->
 
 <h2>Bug List</h2>
 
 <% if @bugs.any? %>
+  <table border="1" cellpadding="10" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Screenshot</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @bugs.each do |bug| %>
+        <tr>
+          <td><%= bug.title %></td>
+          <td><%= truncate(bug.description, length: 50) %></td>
+          <td><%= bug.bug_type.capitalize %></td>
+          <td><%= bug.status.humanize %></td>
+          <td>
+            <% if bug.screenshot.present? %>
+              <%= image_tag bug.screenshot.url, width: 80 %>
+            <% else %>No Image<% end %>
+          </td>
+          <td>
+            <%= link_to "View", project_bug_path(@project, bug) %>
+            <% if current_user.qa? && bug.creator == current_user %>
+              | <%= link_to "Edit", edit_project_bug_path(@project, bug) %>
+              | <%= link_to "Delete", project_bug_path(@project, bug), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<table border="1" cellpadding="10" cellspacing="0">
-
-<thead>
-<tr>
-  <th>Title</th>
-  <th>Description</th>
-  <th>Type</th>
-  <th>Status</th>
-  <th>Screenshot</th>
-  <th>Actions</th>
-</tr>
-</thead>
-
-<tbody>
-
-<% @bugs.each do |bug| %>
-
-<tr>
-
-<td>
-  <%= bug.title %>
-</td>
-
-<td>
-  <%= bug.description %>
-</td>
-
-<td>
-  <%= bug.bug_type.capitalize %>
-</td>
-
-<td>
-  <%= bug.status.humanize %>
-</td>
-
-<td>
-  <% if bug.screenshot.present? %>
-    <%= image_tag bug.screenshot.url, width: 80 %>
-  <% else %>
-    No Image
-  <% end %>
-</td>
-
-<td>
-
-  <%= link_to "View", project_bug_path(@project, bug) %>
-
-  <% if current_user.qa? && bug.creator == current_user %>
-    |
-    <%= link_to "Edit", edit_project_bug_path(@project, bug) %>
-    |
-    <%= link_to "Delete",
-        project_bug_path(@project, bug),
-        data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %>
-  <% end %>
-
-</td>
-
-</tr>
-
-<% end %>
-
-</tbody>
-
-</table>
-
+  <!-- Pagination -->
+  <div style="margin-top:20px;">
+    <%= will_paginate @bugs %>
+  </div>
 <% else %>
-
-<p>No bugs found for this project.</p>
-
+  <p>No bugs found for this project.</p>
 <% end %>
-
-
-<!-- FILTER SCRIPT -->
-
-<script>
-
-document.addEventListener("turbo:load", () => {
-
-  const typeFilter = document.getElementById("type-filter");
-  const statusFilter = document.getElementById("status-filter");
-
-  if(!typeFilter || !statusFilter) return;
-
-  const statusOptions = {
-
-    feature: [
-      { text: "New", value: "new_feature" },
-      { text: "Started", value: "started" },
-      { text: "Completed", value: "completed" }
-    ],
-
-    bug: [
-      { text: "New", value: "new_bug" },
-      { text: "Started", value: "started" },
-      { text: "Resolved", value: "resolved" }
-    ]
-
-  };
-
-  function updateStatusOptions(){
-
-    const selectedType = typeFilter.value;
-
-    statusFilter.innerHTML = "";
-
-    const allOption = document.createElement("option");
-    allOption.value = "";
-    allOption.text = "All";
-    statusFilter.appendChild(allOption);
-
-    if(statusOptions[selectedType]){
-
-      statusOptions[selectedType].forEach(opt => {
-
-        const option = document.createElement("option");
-
-        option.value = opt.value;
-        option.text = opt.text;
-
-        statusFilter.appendChild(option);
-
-      });
-
-    }
-
-    else{
-
-      Object.values(statusOptions).flat().forEach(opt => {
-
-        const option = document.createElement("option");
-
-        option.value = opt.value;
-        option.text = opt.text;
-
-        statusFilter.appendChild(option);
-
-      });
-
-    }
-
-  }
-
-  typeFilter.addEventListener("change", updateStatusOptions);
-
-  updateStatusOptions();
-
-});
-
-</script>

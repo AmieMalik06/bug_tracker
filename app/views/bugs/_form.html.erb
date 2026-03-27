@@ -1,0 +1,89 @@
+<%= form_with(model: [project, bug], local: true, html: { multipart: true, class: "bug-form" }) do |f| %>
+  <% if flash[:alert].present? %>
+    <div class="alert alert-danger"><%= flash[:alert] %></div>
+  <% end %>
+
+  <% if bug.errors.any? %>
+    <div class="alert alert-danger">
+      <h4>Errors:</h4>
+      <ul>
+        <% bug.errors.full_messages.each { |msg| concat(content_tag(:li, msg)) } %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :title %>
+    <%= f.text_field :title, class: "form-control", placeholder: "Enter bug title" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description %>
+    <%= f.text_area :description, class: "form-control", rows: 4, placeholder: "Describe the bug" %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group" style="flex:1;">
+      <%= f.label :bug_type, "Type" %>
+      <% bug_types_for_form = bug.new_record? ? Bug.bug_types.except("feature").keys : Bug.bug_types.keys %>
+      <%= f.select :bug_type,
+        bug_types_for_form.map { |t| [t.titleize, t] },
+        {},
+        { id: "bug_type_select", class: "form-control" } %>
+    </div>
+
+    <div class="form-group" style="flex:1;">
+      <%= f.label :status %>
+      <%= f.select :status,
+        bug.available_statuses.map { |s| [s.titleize, s] },
+        { selected: bug.status },
+        { id: "status_select", class: "form-control" } %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :assigned_user_id, "Assign Developer" %>
+    <%= f.select :assigned_user_id,
+      project.users.where(role: "developer").pluck(:email, :id),
+      { include_blank: "Unassigned", selected: bug.assigned_user_id },
+      { class: "form-control" } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :screenshot %>
+    <%= f.file_field :screenshot, accept: "image/png,image/gif", class: "form-control-file" %>
+    <small class="form-text text-muted">Allowed: PNG, GIF</small>
+  </div>
+
+  <div class="form-actions text-center">
+    <%= f.submit bug.new_record? ? "Create Bug" : "Update Bug", class: "btn btn-primary btn-lg" %>
+  </div>
+<% end %>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const typeSelect = document.getElementById("bug_type_select");
+  const statusSelect = document.getElementById("status_select");
+  if(!typeSelect || !statusSelect) return;
+
+  function updateStatus(){
+    const type = typeSelect.value;
+    const statuses = {
+      feature: <%= Bug.new.available_statuses(for_type: "feature").to_json.html_safe %>,
+      bug: <%= Bug.new.available_statuses(for_type: "bug").to_json.html_safe %>
+    }[type] || [];
+
+    statusSelect.innerHTML = "";
+    statuses.forEach(s => {
+      const option = document.createElement("option");
+      option.value = s;
+      option.text = s.charAt(0).toUpperCase() + s.slice(1);
+      if("<%= bug.status %>" === s) option.selected = true;
+      statusSelect.appendChild(option);
+    });
+  }
+
+  typeSelect.addEventListener("change", updateStatus);
+  updateStatus();
+});
+</script>

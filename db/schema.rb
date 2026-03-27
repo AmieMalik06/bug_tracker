@@ -1,16 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead
-# of editing this file, please use the migrations feature of Active Record to
-# incrementally modify your database, and then regenerate this schema definition.
-#
-# This file is the source Rails uses to define your schema when running `bin/rails
-# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
-# be faster and is potentially less error prone than running all of your
-# migrations from scratch. Old migrations may fail to apply correctly if those
-# migrations use external dependencies or application code.
-#
-# It's strongly recommended that you check this file into your version control system.
-
-ActiveRecord::Schema[7.2].define(version: 2026_03_13_102756) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_24_144544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -64,6 +52,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_13_102756) do
     t.index ["project_id"], name: "index_bugs_on_project_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "recipient_type"
+    t.bigint "recipient_id"
+    t.string "key"
+    t.jsonb "params"
+    t.string "target_type"
+    t.bigint "target_id"
+    t.datetime "read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "type"
+    t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"
+    t.index ["target_type", "target_id"], name: "index_notifications_on_target"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -84,7 +87,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_13_102756) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "assignments", "projects"
+  add_foreign_key "assignments", "projects"                                                                                                                                                                                                                                                                                   
   add_foreign_key "assignments", "users"
   add_foreign_key "bugs", "projects"
   add_foreign_key "bugs", "users", column: "creator_id"

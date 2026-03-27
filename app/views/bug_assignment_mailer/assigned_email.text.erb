@@ -1,0 +1,16 @@
+New Bug Assigned
+
+Hello <%= @developer.email %>,
+
+A new bug has been assigned to you in the project: <%= @project.name %>.
+
+Title: <%= @bug.title %>
+Description: <%= @bug.description %>
+Bug Type: <%= @bug.bug_type.capitalize %>
+Status: <%= @bug.status.capitalize %>
+Created by: <%= @creator.email %>
+
+You can view the bug here: <%= project_bug_url(@project, @bug) %>
+
+Regards,
+Bug Tracking System

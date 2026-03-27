@@ -1,11 +1,23 @@
 source "https://rubygems.org"
 
-gem "devise"
-gem "cancancan"
-gem "ransack"
-gem "carrierwave", "~> 2.0"
-gem "mini_magick" # optional for image processing
-gem "activity_notification"
+# Gemfile
+gem "devise"                 # Authentication
+gem "cancancan"              # Roles & permissions
+gem "carrierwave"            # File uploads
+gem "fog-aws"                # S3 integration
+gem "sidekiq"
+gem "redis"
+gem "sidekiq-cron"
+gem "activity_notification", "~> 2.5.1"  # Notifications
+gem "ransack"                # Search/filtering
+gem "bootstrap", "~> 5.3"    # UI styling (optional)
+gem "simple_form"            # Easier forms
+gem "dotenv-rails"           # Environment variables for AWS keys
+gem "faker", group: :development # Test data
+gem "will_paginate"          # Pagination support
+gem "sassc-rails"            # Required by bootstrap
+gem "bootstrap", "~> 5.3"    # UI styling
+gem "noticed", "~> 1.4"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.3"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]

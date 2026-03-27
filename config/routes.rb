@@ -8,6 +8,8 @@ Rails.application.routes.draw do
       patch :update_users
     end
   end
+  require "sidekiq/web"
+mount Sidekiq::Web => "/sidekiq"
 
   get "dashboard", to: "dashboard#index", as: :dashboard
 
